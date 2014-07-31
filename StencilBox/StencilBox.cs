@@ -31,10 +31,10 @@
 	/// For manual replacements (key token is replaced with value):
 	///		[m~key]
 	/// </summary>
-	public static class StencilBox
+	public static class Stencil
 	{
 		// TODO: document this thing
-		public static string Process<T>(T source, string template, Dictionary<string, string> manualReplacements = null, ProcessFlags flags = ProcessFlags.None) where T : class
+        public static string Apply<T>(string template, T source, Dictionary<string, string> manualReplacements = null, ProcessFlags flags = ProcessFlags.None) where T : class
 		{
 			var output = template;
 
