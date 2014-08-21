@@ -9,7 +9,7 @@
     <licenseUrl>http://creativecommons.org/licenses/by/4.0/</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes>Adding functionality to support passing through format strings.</releaseNotes>
     <copyright>Copyright 2014</copyright>
   </metadata>
 </package>

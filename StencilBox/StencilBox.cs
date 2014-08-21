@@ -46,18 +46,23 @@
 				foreach (var info in properties)
 				{
 					var token = string.Format(@"\[\~({0}):?(.*?)\]", info.Name);
-					var value = info.GetValue(source, null).ToString();
+					var value = info.GetValue(source, null);
+				    if (value == null)
+				    {
+				        continue;
+				    }
+
 					output = Regex.Replace(
 						output,
 						token,
 						(match) =>
 							{
-								Group style = match.Groups[2];
+								var style = match.Groups[2];
 								if (style.Success && style.Captures.Count > 0)
 								{
-									return GetModifiedValue(value, style.Captures[0].ToString());
+                                    return GetModifiedValue(value, style.Captures[0].ToString());
 								}
-								return value;
+                                return value.ToString();
 							},
 							((flags & ProcessFlags.CaseSensitive) > 0) ? RegexOptions.None : RegexOptions.IgnoreCase);
 				}
@@ -94,13 +99,18 @@
 			return output;
 		}
 
-		internal static string GetModifiedValue(string value, string tokenModKey)
+		internal static string GetModifiedValue(object value, string tokenModKey)
 		{
+		    if (value == null || (value is DateTime && ((DateTime)value) == DateTime.MinValue))
+		    {
+		       return string.Empty;
+		    }
+
 			switch (tokenModKey.ToLower())
 			{
 				case "codify":
 					// Remove spaces
-					var tempValue = value.Replace(" ", "");
+					var tempValue = value.ToString().Replace(" ", "");
 					
 					// Remove any characters not alpha-numeric
 					tempValue = Regex.Replace(tempValue, "[^a-zA-Z0-9].*?", "");
@@ -118,15 +128,23 @@
 					break;
 
 				case "lowercase":
-					return value.ToLower();
+					return value.ToString().ToLower();
 					break;
 
 				case "uppercase":
-					return value.ToUpper();
+					return value.ToString().ToUpper();
 					break;
+
+                default:
+			        var toStringMethod = value.GetType().GetMethod("ToString", new[] { typeof(string) });
+			        if (toStringMethod != null)
+			        {
+			            return (string)toStringMethod.Invoke(value, new[] { tokenModKey });
+			        }
+			        break;
 			}
 
-			return value;
+			return value.ToString();
 		}
 	}
 }
