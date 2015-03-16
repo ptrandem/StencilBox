@@ -14,6 +14,11 @@ namespace StencilBox.Tests
             public DateTime TestDate { get; set; }
         }
 
+        public class DerivedModel : TestModel
+        {
+            public string Name { get; set; }
+        }
+
         [TestMethod]
         public void Stencil_handles_normal_brackets_correctly()
         {
@@ -72,6 +77,40 @@ namespace StencilBox.Tests
             var output = Stencil.Apply(template, model);
 
             Assert.AreEqual(expectedOutput, output);
+        }
+
+        [TestMethod]
+        public void Stencil_handles_anonymous_types_passed_as_object()
+        {
+            const string template = "[~Id]: [~Name]";
+            const string expectedOutput = "123: Item Name";
+            var model = new { Id = 123, Name = "Item Name" };
+
+            var output = ApplyStencilToAnonymousType(template, model);
+
+            Assert.AreEqual(expectedOutput, output);
+        }
+
+        private string ApplyStencilToAnonymousType(string template, object model)
+        {
+            return Stencil.Apply(template, model);
+        }
+
+        [TestMethod]
+        public void Stencil_handles_sub_types_passed_as_super_type()
+        {
+            const string template = "[~Name]: [~Description]";
+            const string expectedOutput = "Child Name: Parent Description";
+            var model = new DerivedModel { Name = "Child Name", Description = "Parent Description" };
+
+            var output = ApplyStencilToSubType(template, model);
+
+            Assert.AreEqual(expectedOutput, output);
+        }
+
+        private string ApplyStencilToSubType(string template, TestModel model)
+        {
+            return Stencil.Apply(template, model);
         }
     }
 }
