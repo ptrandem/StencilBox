@@ -80,7 +80,7 @@ namespace StencilBox.Tests
         }
 
         [TestMethod]
-        public void Stencil_handles_anonymouse_types_passed_as_object()
+        public void Stencil_handles_anonymous_types_passed_as_object()
         {
             const string template = "[~Id]: [~Name]";
             const string expectedOutput = "123: Item Name";
