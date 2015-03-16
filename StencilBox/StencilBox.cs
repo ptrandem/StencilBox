@@ -34,14 +34,14 @@
 	public static class Stencil
 	{
 		// TODO: document this thing
-        public static string Apply<T>(string template, T source, Dictionary<string, string> manualReplacements = null, ProcessFlags flags = ProcessFlags.None) where T : class
+        public static string Apply(string template, object source, Dictionary<string, string> manualReplacements = null, ProcessFlags flags = ProcessFlags.None)
 		{
 			var output = template;
 
 			if (source != null)
 			{
-				IEnumerable<PropertyInfo> properties =
-					typeof(T).GetProperties(BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.Instance);
+                IEnumerable<PropertyInfo> properties =
+                    source.GetType().GetProperties(BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.Instance);
 
 				foreach (var info in properties)
 				{
